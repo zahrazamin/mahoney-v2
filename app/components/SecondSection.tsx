@@ -3,110 +3,8 @@
 import Image from 'next/image'
 import { ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef, useState } from 'react'
-
-const HOVER_IMAGES = [
-  '/images/products/hover/9.png',
-  '/images/products/hover/10-hover.png',
-]
-
-const PRODUCTS = [
-  {
-    id: 1,
-    sku: 'SKU: 11BG0910A110',
-    name: 'Illuminated Push Buttons',
-    price: '$23.00',
-    specs: '22mm | 10A | Green LED | Momentary',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-1.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
-  },
-  {
-    id: 2,
-    sku: 'SKU: 11BG0910A111',
-    name: 'Circuit Breaker',
-    price: '$45.00',
-    specs: '15A | 1-Pole | DIN Rail Mount',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-2.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-2.png',
-  },
-  {
-    id: 3,
-    sku: 'SKU: 11BG0910A112',
-    name: 'Cooling Fan',
-    price: '$32.00',
-    specs: '120V AC | Axial | 119mm',
-    stockStatus: 'Lead Time 10 Days',
-    stockColor: '#E33C3F',
-    image: '/images/products/default/product-3.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-3.png',
-  },
-  {
-    id: 4,
-    sku: 'SKU: 11BG0910A113',
-    name: 'Warning Light',
-    price: '$58.00',
-    specs: '24V DC | Red LED | Flashing',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-4.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
-  },
-  {
-    id: 5,
-    sku: 'SKU: 11BG0910A114',
-    name: 'Industrial Relay',
-    price: '$18.00',
-    specs: '12V DC | DPDT | Plug-in',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-5.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
-  },
-  {
-    id: 6,
-    sku: 'SKU: 11BG0910A115',
-    name: 'Power Supply',
-    price: '$85.00',
-    specs: '24V DC | 5A | 120W | DIN Rail',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-6.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-2.png',
-  },
-  {
-    id: 7,
-    sku: 'SKU: 11BG0910A116',
-    name: 'Terminal Block',
-    price: '$2.50',
-    specs: 'Push-in | 2-Conductor | Gray',
-    stockStatus: 'Lead Time 10 Days',
-    stockColor: '#E33C3F',
-    image: '/images/products/default/product-7.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-3.png',
-  },
-  {
-    id: 8,
-    sku: 'SKU: 11BG0910A117',
-    name: 'Emergency Stop',
-    price: '$42.00',
-    specs: '40mm Mushroom | Turn to Release',
-    stockStatus: '40 in Stock - Ready to ship',
-    stockColor: '#538D22',
-    image: '/images/products/default/product-8.png',
-    hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
-  },
-]
+import { useRouter } from 'next/navigation'
+import { PRODUCTS } from '../lib/products'
 
 export default function SecondSection() {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -114,6 +12,7 @@ export default function SecondSection() {
   const isDragging = useRef(false)
   const dragStartX = useRef(0)
   const dragScrollLeft = useRef(0)
+  const wasDragged = useRef(false)
 
   const handleScroll = () => {
     if (!scrollRef.current) return
@@ -129,6 +28,7 @@ export default function SecondSection() {
   const onMouseDown = (e: React.MouseEvent) => {
     if (!scrollRef.current) return
     isDragging.current = true
+    wasDragged.current = false
     dragStartX.current = e.pageX - scrollRef.current.offsetLeft
     dragScrollLeft.current = scrollRef.current.scrollLeft
     scrollRef.current.style.cursor = 'grabbing'
@@ -147,6 +47,7 @@ export default function SecondSection() {
     e.preventDefault()
     const x = e.pageX - scrollRef.current.offsetLeft
     const walk = (x - dragStartX.current) * 1.5
+    if (Math.abs(walk) > 8) wasDragged.current = true
     scrollRef.current.scrollLeft = dragScrollLeft.current - walk
   }
 
@@ -187,7 +88,7 @@ export default function SecondSection() {
           background-color: #092211;
           border: 1.5px solid transparent;
           color: #ffffff;
-          transition: border-color 1400ms cubic-bezier(0.23, 1, 0.32, 1), color 1400ms cubic-bezier(0.23, 1, 0.32, 1), transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+          transition: border-color 1400ms cubic-bezier(0.23, 1, 0.32, 1), transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
         }
         .cart-btn:hover {
           border-color: #092211;
@@ -241,6 +142,11 @@ export default function SecondSection() {
         }
         .add-to-quote-btn:hover span {
           color: #AAD576;
+        }
+        @keyframes stock-ping {
+          0% { transform: scale(1); opacity: 0.4; }
+          70% { transform: scale(2.4); opacity: 0; }
+          100% { transform: scale(2.4); opacity: 0; }
         }
       `}</style>
 
@@ -314,7 +220,7 @@ export default function SecondSection() {
         <div style={{ flexShrink: 0, width: '180px', scrollSnapAlign: 'start' }} />
         {PRODUCTS.map((product) => (
           <div key={product.id} style={{ scrollSnapAlign: 'start', flexShrink: 0, width: 'calc((100vw - 400px - 60px) / 4)' }}>
-            <ProductCard product={product} />
+            <ProductCard product={product} wasDragged={wasDragged} />
           </div>
         ))}
         {/* Right spacer */}
@@ -387,14 +293,28 @@ export default function SecondSection() {
   )
 }
 
-function ProductCard({ product }: { product: typeof PRODUCTS[0] }) {
+function ProductCard({
+  product,
+  wasDragged,
+}: {
+  product: typeof PRODUCTS[0]
+  wasDragged: React.MutableRefObject<boolean>
+}) {
   const [hovered, setHovered] = useState(false)
+  const router = useRouter()
+
+  const handleClick = () => {
+    if (!wasDragged.current) {
+      router.push(`/products/${product.id}`)
+    }
+  }
 
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px', cursor: 'pointer' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={handleClick}
     >
       {/* Image Box */}
       <div
@@ -543,7 +463,7 @@ function ProductCard({ product }: { product: typeof PRODUCTS[0] }) {
       {/* Details */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 8px' }}>
         <div style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400, color: 'rgba(13, 40, 24, 0.52)', letterSpacing: '0.04em' }}>
-          {product.sku}
+          SKU: {product.sku}
         </div>
         <div style={{ fontFamily: 'var(--font-condensed)', fontSize: '18px', fontWeight: 600, color: '#0D2818', lineHeight: 1.2, marginTop: '2px' }}>
           {product.name}
@@ -557,7 +477,17 @@ function ProductCard({ product }: { product: typeof PRODUCTS[0] }) {
 
         {/* Stock Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: product.stockColor }} />
+          <span style={{ position: 'relative', width: '8px', height: '8px', flexShrink: 0 }}>
+            <span style={{
+              position: 'absolute', inset: 0, borderRadius: '50%',
+              backgroundColor: product.stockColor, opacity: 0.4,
+              animation: 'stock-ping 1.4s cubic-bezier(0,0,0.2,1) infinite',
+            }} />
+            <span style={{
+              position: 'absolute', inset: '1px', borderRadius: '50%',
+              backgroundColor: product.stockColor,
+            }} />
+          </span>
           <span style={{ fontFamily: 'var(--font-condensed)', fontSize: '14px', fontWeight: 600, color: product.stockColor }}>
             {product.stockStatus}
           </span>

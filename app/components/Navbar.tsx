@@ -13,7 +13,7 @@ const RANGE  = 220   // scroll px to complete animation — longer = smoother
 const BAR_H  = 78    // bar height
 const PAD    = 40    // gap between bar edge and content
 
-export default function Navbar() {
+export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: boolean }) {
   const barRef     = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -21,6 +21,13 @@ export default function Navbar() {
     const bar     = barRef.current!
     const content = contentRef.current!
     if (!bar || !content) return
+
+    if (defaultExpanded) {
+      bar.style.clipPath  = 'inset(0 0px 0 0px round 0px)'
+      bar.style.transform = 'translateY(0)'
+      content.style.transform = `translateY(${BAR_H / 2}px) translateY(-50%)`
+      return
+    }
 
     let raf: number
 
@@ -53,7 +60,17 @@ export default function Navbar() {
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(raf)
     }
-  }, [])
+  }, [defaultExpanded])
+
+  const initTransform = defaultExpanded
+    ? `translateY(0)`
+    : `translateY(${TOP}px)`
+  const initClip = defaultExpanded
+    ? 'inset(0 0px 0 0px round 0px)'
+    : `inset(0 ${MARGIN}px 0 ${MARGIN}px round ${RADIUS}px)`
+  const initContentTransform = defaultExpanded
+    ? `translateY(${BAR_H / 2}px) translateY(-50%)`
+    : `translateY(${TOP + BAR_H / 2}px) translateY(-50%)`
 
   return (
     // Transparent full-viewport shell — never resizes, never moves
@@ -74,11 +91,11 @@ export default function Navbar() {
           left: 0,
           right: 0,
           top: 0,
-          transform: `translateY(${TOP}px)`,
+          transform: initTransform,
           height: `${BAR_H}px`,
           backgroundColor: '#0B2A1B',
           filter: 'drop-shadow(0 4px 32px rgba(0,0,0,0.22))',
-          clipPath: `inset(0 ${MARGIN}px 0 ${MARGIN}px round ${RADIUS}px)`,
+          clipPath: initClip,
         }}
       />
 
@@ -90,7 +107,7 @@ export default function Navbar() {
           left: 0,
           right: 0,
           top: 0,
-          transform: `translateY(${TOP + BAR_H / 2}px) translateY(-50%)`,
+          transform: initContentTransform,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',

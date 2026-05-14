@@ -213,7 +213,7 @@ function ProductCard() {
             {PRODUCT.brand}
           </span>
           <button
-            style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 600, color: '#ffffff', backgroundColor: '#538D22', border: 'none', borderRadius: '10px', padding: '12px 24px', cursor: 'pointer', transition: 'transform 160ms ease-out, opacity 160ms ease-out' }}
+            style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 600, color: '#ffffff', backgroundColor: '#538D22', border: 'none', borderRadius: '9999px', padding: '12px 24px', cursor: 'pointer', transition: 'transform 160ms ease-out, opacity 160ms ease-out' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.96)')}

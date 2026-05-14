@@ -1,351 +1,578 @@
 'use client'
 
 import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useRef, useState } from 'react'
 
-const CATEGORIES = [
-  {
-    label: 'Fans & Cooling',
-    sub: 'AC/DC axial & blower fans',
-    image: '/images/products/fans-ac-dc.jpg',
-    count: '240+ SKUs',
-  },
-  {
-    label: 'Heaters',
-    sub: 'Panel & enclosure heaters',
-    image: '/images/products/heaters.jpg',
-    count: '180+ SKUs',
-  },
-  {
-    label: 'Power Cords',
-    sub: 'NEMA, IEC & custom assemblies',
-    image: '/images/products/power-cords.jpg',
-    count: '320+ SKUs',
-  },
-  {
-    label: 'Distribution Blocks',
-    sub: 'Terminal & power distribution',
-    image: '/images/products/power-dist-blocks.jpg',
-    count: '150+ SKUs',
-  },
+const HOVER_IMAGES = [
+  '/images/products/hover/9.png',
+  '/images/products/hover/10-hover.png',
 ]
 
-const STATS = [
-  { value: '50K+', label: 'Products in stock' },
-  { value: '24 hr', label: 'Same-day shipping cutoff' },
-  { value: '99.2%', label: 'Order accuracy rate' },
-  { value: '30+', label: 'Years of experience' },
+const PRODUCTS = [
+  {
+    id: 1,
+    sku: 'SKU: 11BG0910A110',
+    name: 'Illuminated Push Buttons',
+    price: '$23.00',
+    specs: '22mm | 10A | Green LED | Momentary',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-1.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-1.png',
+  },
+  {
+    id: 2,
+    sku: 'SKU: 11BG0910A111',
+    name: 'Circuit Breaker',
+    price: '$45.00',
+    specs: '15A | 1-Pole | DIN Rail Mount',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-2.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-2.png',
+  },
+  {
+    id: 3,
+    sku: 'SKU: 11BG0910A112',
+    name: 'Cooling Fan',
+    price: '$32.00',
+    specs: '120V AC | Axial | 119mm',
+    stockStatus: 'Lead Time 10 Days',
+    stockColor: '#E33C3F',
+    image: '/images/products/default/product-3.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-3.png',
+  },
+  {
+    id: 4,
+    sku: 'SKU: 11BG0910A113',
+    name: 'Warning Light',
+    price: '$58.00',
+    specs: '24V DC | Red LED | Flashing',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-4.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-1.png',
+  },
+  {
+    id: 5,
+    sku: 'SKU: 11BG0910A114',
+    name: 'Industrial Relay',
+    price: '$18.00',
+    specs: '12V DC | DPDT | Plug-in',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-5.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-1.png',
+  },
+  {
+    id: 6,
+    sku: 'SKU: 11BG0910A115',
+    name: 'Power Supply',
+    price: '$85.00',
+    specs: '24V DC | 5A | 120W | DIN Rail',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-6.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-2.png',
+  },
+  {
+    id: 7,
+    sku: 'SKU: 11BG0910A116',
+    name: 'Terminal Block',
+    price: '$2.50',
+    specs: 'Push-in | 2-Conductor | Gray',
+    stockStatus: 'Lead Time 10 Days',
+    stockColor: '#E33C3F',
+    image: '/images/products/default/product-7.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-3.png',
+  },
+  {
+    id: 8,
+    sku: 'SKU: 11BG0910A117',
+    name: 'Emergency Stop',
+    price: '$42.00',
+    specs: '40mm Mushroom | Turn to Release',
+    stockStatus: '40 in Stock - Ready to ship',
+    stockColor: '#538D22',
+    image: '/images/products/default/product-8.png',
+    hoverImage: '/images/products/hover/hover-image.jpg',
+    logo: '/images/logo/partner logo/logo-1.png',
+  },
 ]
 
 export default function SecondSection() {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const dragScrollLeft = useRef(0)
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+    const maxScroll = scrollWidth - clientWidth
+    if (maxScroll <= 0) {
+      setScrollProgress(0)
+    } else {
+      setScrollProgress(scrollLeft / maxScroll)
+    }
+  }
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    if (!scrollRef.current) return
+    isDragging.current = true
+    dragStartX.current = e.pageX - scrollRef.current.offsetLeft
+    dragScrollLeft.current = scrollRef.current.scrollLeft
+    scrollRef.current.style.cursor = 'grabbing'
+    scrollRef.current.style.scrollSnapType = 'none'
+  }
+
+  const onMouseUp = () => {
+    if (!scrollRef.current) return
+    isDragging.current = false
+    scrollRef.current.style.cursor = 'grab'
+    scrollRef.current.style.scrollSnapType = 'x mandatory'
+  }
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !scrollRef.current) return
+    e.preventDefault()
+    const x = e.pageX - scrollRef.current.offsetLeft
+    const walk = (x - dragStartX.current) * 1.5
+    scrollRef.current.scrollLeft = dragScrollLeft.current - walk
+  }
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -600, behavior: 'smooth' })
+    }
+  }
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 600, behavior: 'smooth' })
+    }
+  }
+
   return (
     <div
       style={{
         position: 'relative',
         zIndex: 2,
         backgroundColor: '#ffffff',
-        borderRadius: '24px 24px 0 0',
+        borderRadius: '32px 32px 0 0',
         marginTop: '-40px',
-        minHeight: '100vh',
-        boxShadow: '0 -16px 64px rgba(0,0,0,0.18)',
         paddingTop: '80px',
-        paddingBottom: '80px',
+        paddingBottom: '120px',
+        boxShadow: '0 -16px 64px rgba(0,0,0,0.08)',
       }}
     >
-      {/* Stats bar */}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '0',
-          padding: '48px 80px 0',
-          marginBottom: '64px',
-        }}
-      >
-        {STATS.map((stat, i) => (
-          <div
-            key={stat.label}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .cart-btn {
+          background-color: #092211;
+          border: 1.5px solid transparent;
+          color: #ffffff;
+          transition: border-color 1400ms cubic-bezier(0.23, 1, 0.32, 1), color 1400ms cubic-bezier(0.23, 1, 0.32, 1), transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .cart-btn:hover {
+          border-color: #092211;
+          color: #092211;
+        }
+        .cart-btn::before {
+          content: '';
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          border-radius: 50%;
+          background: #ffffff;
+          top: calc(var(--mouse-y, 50%) - 100%);
+          left: calc(var(--mouse-x, 50%) - 100%);
+          transform: scale(0);
+          transition: transform 1400ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+          pointer-events: none;
+        }
+        .cart-btn:hover::before {
+          transform: scale(3);
+        }
+        .cart-btn svg {
+          position: relative;
+          z-index: 1;
+        }
+        .cart-btn:active {
+          transform: scale(0.9);
+        }
+        .add-to-quote-btn {
+          position: relative;
+          overflow: hidden;
+        }
+        .add-to-quote-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: #0B2A1B;
+          border-radius: 9999px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .add-to-quote-btn:hover::before {
+          transform: translateX(0);
+        }
+        .add-to-quote-btn span {
+          position: relative;
+          z-index: 1;
+          transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .add-to-quote-btn:hover span {
+          color: #AAD576;
+        }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '0 200px' }}>
+        <h2
+          style={{
+            fontFamily: 'var(--font-condensed)',
+            fontSize: '44px',
+            fontWeight: 700,
+            color: '#092211',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          Find your Product
+        </h2>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
             style={{
-              flex: 1,
-              textAlign: 'center',
-              padding: '32px 24px',
-              borderLeft: i > 0 ? '1px solid #E8E4DC' : 'none',
+              backgroundColor: '#F1F4F2',
+              color: '#0D2818',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '12px 24px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
             }}
           >
-            <div
-              style={{
-                fontFamily: 'var(--font-condensed)',
-                fontSize: '42px',
-                fontWeight: 700,
-                color: '#1C2B1E',
-                letterSpacing: '-0.02em',
-                lineHeight: 1,
-                marginBottom: '8px',
-              }}
-            >
-              {stat.value}
-            </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-sans)',
-                fontSize: '13px',
-                fontWeight: 400,
-                color: '#5A5A5A',
-                letterSpacing: '0.01em',
-              }}
-            >
-              {stat.label}
-            </div>
+            BestSeller
+          </button>
+          <button
+            style={{
+              backgroundColor: 'transparent',
+              color: '#5A5A5A',
+              border: 'none',
+              padding: '12px 24px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            New Arrivals
+          </button>
+        </div>
+      </div>
+
+      {/* Carousel Container */}
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        onMouseMove={onMouseMove}
+        className="hide-scrollbar"
+        style={{
+          display: 'flex',
+          gap: '12px',
+          overflowX: 'auto',
+          scrollSnapType: 'x mandatory',
+          paddingBottom: '24px',
+          cursor: 'grab',
+          userSelect: 'none',
+        }}
+      >
+        {/* Left spacer (180px width + 20px gap = 200px total margin) */}
+        <div style={{ flexShrink: 0, width: '180px', scrollSnapAlign: 'start' }} />
+        {PRODUCTS.map((product) => (
+          <div key={product.id} style={{ scrollSnapAlign: 'start', flexShrink: 0, width: 'calc((100vw - 400px - 60px) / 4)' }}>
+            <ProductCard product={product} />
           </div>
         ))}
+        {/* Right spacer */}
+        <div style={{ flexShrink: 0, width: '180px' }} />
       </div>
 
-      {/* Section header */}
-      <div
-        style={{
-          padding: '0 80px',
-          marginBottom: '36px',
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div>
-          <p
+      {/* Footer Controls */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', padding: '0 200px' }}>
+        {/* Progress Bar */}
+        <div style={{ width: '200px', height: '2px', backgroundColor: '#E8E4DC', position: 'relative' }}>
+          <div
             style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#2D4A30',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '100%',
+              backgroundColor: '#092211',
+              width: '40px',
+              transform: `translateX(${scrollProgress * 160}px)`,
+              transition: 'transform 100ms linear',
             }}
-          >
-            In-stock &amp; ready to ship
-          </p>
-          <h2
-            style={{
-              fontFamily: 'var(--font-condensed)',
-              fontSize: '48px',
-              fontWeight: 700,
-              color: '#1C2B1E',
-              letterSpacing: '-0.02em',
-              lineHeight: 1.05,
-            }}
-          >
-            Shop by Category
-          </h2>
+          />
         </div>
-        <BrowseAllButton />
-      </div>
 
-      {/* Category grid */}
-      <div
-        style={{
-          padding: '0 80px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '16px',
-        }}
-      >
-        {CATEGORIES.map(cat => (
-          <CategoryCard key={cat.label} {...cat} />
-        ))}
-      </div>
-
-      {/* Bottom promo strip */}
-      <div
-        style={{
-          margin: '64px 80px 0',
-          backgroundColor: '#1C2B1E',
-          borderRadius: '20px',
-          padding: '48px 56px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div>
-          <p
+        {/* Navigation Arrows */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <button
+            onClick={scrollLeft}
             style={{
-              fontFamily: 'var(--font-sans)',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: '#C8E06A',
-              letterSpacing: '0.12em',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              border: '1px solid #E8E4DC',
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#092211',
+              transition: 'background-color 150ms ease-out',
             }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#F5F5F5'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
           >
-            No minimum order
-          </p>
-          <h3
+            <ChevronLeft size={20} strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={scrollRight}
             style={{
-              fontFamily: 'var(--font-condensed)',
-              fontSize: '36px',
-              fontWeight: 700,
-              color: '#ffffff',
-              letterSpacing: '-0.01em',
-              lineHeight: 1.1,
-              maxWidth: '520px',
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              border: '1px solid #E8E4DC',
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: '#092211',
+              transition: 'background-color 150ms ease-out',
             }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#F5F5F5'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
           >
-            Can&apos;t find what you need? Our team sources it for you.
-          </h3>
+            <ChevronRight size={20} strokeWidth={2.5} />
+          </button>
         </div>
-        <ContactButton />
       </div>
     </div>
   )
 }
 
-function CategoryCard({
-  label,
-  sub,
-  image,
-  count,
-}: {
-  label: string
-  sub: string
-  image: string
-  count: string
-}) {
+function ProductCard({ product }: { product: typeof PRODUCTS[0] }) {
+  const [hovered, setHovered] = useState(false)
+
   return (
-    <a
-      href="#"
-      style={{
-        display: 'block',
-        borderRadius: '16px',
-        overflow: 'hidden',
-        backgroundColor: '#ffffff',
-        border: '1px solid #E8E4DC',
-        textDecoration: 'none',
-        transition: 'box-shadow 200ms cubic-bezier(0.23,1,0.32,1), transform 200ms cubic-bezier(0.23,1,0.32,1)',
-        cursor: 'pointer',
-      }}
-      onMouseEnter={e => {
-        e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.12)'
-        e.currentTarget.style.transform = 'translateY(-4px)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.boxShadow = 'none'
-        e.currentTarget.style.transform = 'translateY(0)'
-      }}
-      onMouseDown={e => { e.currentTarget.style.transform = 'translateY(-2px) scale(0.98)' }}
-      onMouseUp={e => { e.currentTarget.style.transform = 'translateY(-4px) scale(1)' }}
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
-      {/* Image */}
-      <div style={{ position: 'relative', height: '200px', backgroundColor: '#F2F0EB' }}>
-        <Image
-          src={image}
-          alt={label}
-          fill
-          sizes="(max-width: 1400px) 25vw"
-          style={{ objectFit: 'cover' }}
-        />
+      {/* Image Box */}
+      <div
+        style={{
+          position: 'relative',
+          backgroundColor: '#F0F0F0',
+          borderRadius: '18px',
+          height: '440px',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Default product image — centered with padding, fades out on hover */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            padding: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: hovered ? 0 : 1,
+            transition: 'opacity 220ms ease',
+            pointerEvents: 'none',
+          }}
+        >
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              style={{ objectFit: 'contain' }}
+              sizes="(max-width: 1400px) 25vw"
+            />
+          </div>
+        </div>
+
+        {/* Hover state — top 86%: lifestyle image + Quick Overview */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '83%',
+            borderRadius: '18px 18px 0 0',
+            overflow: 'hidden',
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 220ms ease',
+            pointerEvents: hovered ? 'auto' : 'none',
+          }}
+        >
+          <Image
+            src={product.hoverImage}
+            alt={product.name}
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center top' }}
+            sizes="(max-width: 1400px) 25vw"
+          />
+          {/* Quick Overview — same as Hero Shop Now */}
+          <div style={{ position: 'absolute', bottom: '24px', left: '20px', right: '20px' }}>
+            <button
+              style={{
+                width: '100%',
+                backgroundColor: '#AAD576',
+                color: '#162518',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '16px 40px',
+                fontFamily: 'var(--font-sans)',
+                fontSize: '16px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'transform 160ms ease-out, opacity 160ms ease-out',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.opacity = '0.92' }}
+              onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+              onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
+              onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
+            >
+              Quick Overview
+            </button>
+          </div>
+        </div>
+
+        {/* Add to Quote — fades in on hover, to the left of the cart button */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '16px',
+            left: '16px',
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 220ms ease',
+            pointerEvents: hovered ? 'auto' : 'none',
+          }}
+        >
+          <button
+            className="add-to-quote-btn"
+            style={{
+              backgroundColor: '#538D22',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '12px 24px',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            <span>Add to Quote</span>
+          </button>
+        </div>
+
+        {/* Cart button — always at bottom-right, never moves */}
+        <button
+          className="cart-btn"
+          style={{
+            position: 'absolute',
+            bottom: '16px',
+            right: '16px',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            zIndex: 2,
+          }}
+          onMouseEnter={e => {
+            const r = e.currentTarget.getBoundingClientRect()
+            e.currentTarget.style.setProperty('--mouse-x', ((e.clientX - r.left) / r.width * 100).toFixed(0) + '%')
+            e.currentTarget.style.setProperty('--mouse-y', ((e.clientY - r.top) / r.height * 100).toFixed(0) + '%')
+          }}
+          onMouseLeave={e => {
+            const r = e.currentTarget.getBoundingClientRect()
+            e.currentTarget.style.setProperty('--mouse-x', ((e.clientX - r.left) / r.width * 100).toFixed(0) + '%')
+            e.currentTarget.style.setProperty('--mouse-y', ((e.clientY - r.top) / r.height * 100).toFixed(0) + '%')
+          }}
+        >
+          <ShoppingCart size={18} strokeWidth={2.5} />
+        </button>
       </div>
 
-      {/* Text */}
-      <div style={{ padding: '20px 22px 22px' }}>
-        <div
-          style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: '11px',
-            fontWeight: 600,
-            color: '#2D4A30',
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            marginBottom: '6px',
-          }}
-        >
-          {count}
+      {/* Details */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 8px' }}>
+        <div style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400, color: 'rgba(13, 40, 24, 0.52)', letterSpacing: '0.04em' }}>
+          {product.sku}
         </div>
-        <div
-          style={{
-            fontFamily: 'var(--font-condensed)',
-            fontSize: '20px',
-            fontWeight: 700,
-            color: '#1C2B1E',
-            letterSpacing: '-0.01em',
-            lineHeight: 1.2,
-            marginBottom: '4px',
-          }}
-        >
-          {label}
+        <div style={{ fontFamily: 'var(--font-condensed)', fontSize: '18px', fontWeight: 600, color: '#0D2818', lineHeight: 1.2, marginTop: '2px' }}>
+          {product.name}
         </div>
-        <div
-          style={{
-            fontFamily: 'var(--font-sans)',
-            fontSize: '13px',
-            color: '#5A5A5A',
-            lineHeight: 1.4,
-          }}
-        >
-          {sub}
+        <div style={{ fontFamily: 'var(--font-sans)', fontSize: '16px', fontWeight: 500, color: '#0D2818' }}>
+          {product.price}
+        </div>
+        <div style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400, color: '#0D2818' }}>
+          {product.specs}
+        </div>
+
+        {/* Stock Status */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: product.stockColor }} />
+          <span style={{ fontFamily: 'var(--font-condensed)', fontSize: '14px', fontWeight: 600, color: product.stockColor }}>
+            {product.stockStatus}
+          </span>
+        </div>
+
+        {/* Brand Logo */}
+        <div style={{ position: 'relative', width: '80px', height: '32px', marginTop: '12px' }}>
+          <Image
+            src={product.logo}
+            alt="Brand Logo"
+            fill
+            style={{ objectFit: 'contain', objectPosition: 'left center' }}
+          />
         </div>
       </div>
-    </a>
-  )
-}
-
-function BrowseAllButton() {
-  return (
-    <a
-      href="#"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        fontFamily: 'var(--font-sans)',
-        fontSize: '14px',
-        fontWeight: 600,
-        color: '#1C2B1E',
-        textDecoration: 'none',
-        borderBottom: '1.5px solid #1C2B1E',
-        paddingBottom: '2px',
-        letterSpacing: '0.01em',
-        transition: 'opacity 150ms ease-out',
-        whiteSpace: 'nowrap',
-        marginBottom: '8px',
-      }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = '0.6' }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-    >
-      Browse all categories
-      <ArrowRight size={14} strokeWidth={2} />
-    </a>
-  )
-}
-
-function ContactButton() {
-  return (
-    <a
-      href="#"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        backgroundColor: '#C8E06A',
-        color: '#1C2B1E',
-        borderRadius: '9999px',
-        padding: '16px 36px',
-        fontFamily: 'var(--font-sans)',
-        fontSize: '15px',
-        fontWeight: 600,
-        textDecoration: 'none',
-        letterSpacing: '0.01em',
-        transition: 'transform 160ms cubic-bezier(0.23,1,0.32,1), opacity 160ms ease-out',
-        whiteSpace: 'nowrap',
-        flexShrink: 0,
-      }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = '0.9' }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-      onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
-      onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
-    >
-      Contact our team
-      <ArrowRight size={15} strokeWidth={2} />
-    </a>
+    </div>
   )
 }

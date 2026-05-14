@@ -148,6 +148,55 @@ export default function SecondSection() {
           70% { transform: scale(2.4); opacity: 0; }
           100% { transform: scale(2.4); opacity: 0; }
         }
+        @media (hover: hover) and (pointer: fine) {
+          .arrow-btn:hover { background-color: #F0F0F0; border-color: #C4C0B8; }
+        }
+        .arrow-btn {
+          transition: background-color 180ms cubic-bezier(0.23, 1, 0.32, 1),
+                      border-color 180ms cubic-bezier(0.23, 1, 0.32, 1),
+                      transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .arrow-btn:active { transform: scale(0.9); }
+        .filter-tab {
+          position: relative;
+          overflow: hidden;
+          transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .filter-tab::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 9999px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .filter-tab:hover::before { transform: translateX(0); }
+        .filter-tab > span { position: relative; z-index: 1; transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .filter-tab:active { transform: scale(0.95); }
+        .filter-tab-active::before { background: #0D2818; }
+        .filter-tab-active:hover > span { color: #ffffff; }
+        .filter-tab-inactive::before { background: #F1F4F2; }
+        .filter-tab-inactive:hover > span { color: #0D2818; }
+        .quick-overview-btn {
+          position: relative;
+          overflow: hidden;
+          transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .quick-overview-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: #0B2A1B;
+          border-radius: 12px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .quick-overview-btn:hover::before { transform: translateX(0); }
+        .quick-overview-btn > span { position: relative; z-index: 1; transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .quick-overview-btn:hover > span { color: #AAD576; }
+        .quick-overview-btn:active { transform: scale(0.97); }
       `}</style>
 
       {/* Header */}
@@ -166,6 +215,7 @@ export default function SecondSection() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button
+            className="filter-tab filter-tab-active"
             style={{
               backgroundColor: '#F1F4F2',
               color: '#0D2818',
@@ -178,9 +228,10 @@ export default function SecondSection() {
               cursor: 'pointer',
             }}
           >
-            BestSeller
+            <span>BestSeller</span>
           </button>
           <button
+            className="filter-tab filter-tab-inactive"
             style={{
               backgroundColor: 'transparent',
               color: '#5A5A5A',
@@ -190,9 +241,10 @@ export default function SecondSection() {
               fontSize: '14px',
               fontWeight: 600,
               cursor: 'pointer',
+              borderRadius: '9999px',
             }}
           >
-            New Arrivals
+            <span>New Arrivals</span>
           </button>
         </div>
       </div>
@@ -248,42 +300,26 @@ export default function SecondSection() {
         {/* Navigation Arrows */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <button
+            className="arrow-btn"
             onClick={scrollLeft}
             style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              border: '1px solid #E8E4DC',
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: '#092211',
-              transition: 'background-color 150ms ease-out',
+              width: '44px', height: '44px', borderRadius: '50%',
+              border: '1px solid #E8E4DC', backgroundColor: '#ffffff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', color: '#092211',
             }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#F5F5F5'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
           >
             <ChevronLeft size={20} strokeWidth={2.5} />
           </button>
           <button
+            className="arrow-btn"
             onClick={scrollRight}
             style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '50%',
-              border: '1px solid #E8E4DC',
-              backgroundColor: '#ffffff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              color: '#092211',
-              transition: 'background-color 150ms ease-out',
+              width: '44px', height: '44px', borderRadius: '50%',
+              border: '1px solid #E8E4DC', backgroundColor: '#ffffff',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', color: '#092211',
             }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = '#F5F5F5'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = '#ffffff'}
           >
             <ChevronRight size={20} strokeWidth={2.5} />
           </button>
@@ -376,6 +412,7 @@ function ProductCard({
           {/* Quick Overview — same as Hero Shop Now */}
           <div style={{ position: 'absolute', bottom: '24px', left: '20px', right: '20px' }}>
             <button
+              className="quick-overview-btn"
               style={{
                 width: '100%',
                 backgroundColor: '#AAD576',
@@ -387,14 +424,9 @@ function ProductCard({
                 fontSize: '16px',
                 fontWeight: 600,
                 cursor: 'pointer',
-                transition: 'transform 160ms ease-out, opacity 160ms ease-out',
               }}
-              onMouseEnter={e => { e.currentTarget.style.opacity = '0.92' }}
-              onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-              onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
-              onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
             >
-              Quick Overview
+              <span>Quick Overview</span>
             </button>
           </div>
         </div>

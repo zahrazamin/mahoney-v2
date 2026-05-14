@@ -7,10 +7,12 @@ export default function Home() {
   return (
     <main style={{ position: 'relative' }}>
       <Navbar />
-      <div style={{ position: 'sticky', top: 0, zIndex: 1 }}>
-        <Hero />
+      <div>
+        <div style={{ position: 'sticky', top: 0, zIndex: 1 }}>
+          <Hero />
+        </div>
+        <SecondSection />
       </div>
-      <SecondSection />
       <Footer />
     </main>
   )

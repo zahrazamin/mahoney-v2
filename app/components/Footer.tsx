@@ -117,6 +117,46 @@ function SocialIcon({ item }: { item: typeof SOCIAL[0] }) {
 export default function Footer() {
   return (
     <footer style={{ backgroundColor: '#092211' }}>
+      <style>{`
+        .footer-cta-primary {
+          position: relative;
+          overflow: hidden;
+          transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .footer-cta-primary::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: #AAD576;
+          border-radius: 9999px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .footer-cta-primary:hover::before { transform: translateX(0); }
+        .footer-cta-primary > span { position: relative; z-index: 1; transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1); }
+        .footer-cta-primary:hover > span { color: #0B2A1B; }
+        .footer-cta-primary:active { transform: scale(0.97); }
+        .footer-cta-secondary {
+          position: relative;
+          overflow: hidden;
+          transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .footer-cta-secondary::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(255,255,255,0.12);
+          border-radius: 9999px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .footer-cta-secondary:hover::before { transform: translateX(0); }
+        .footer-cta-secondary > span { position: relative; z-index: 1; transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1); color: rgba(255,255,255,0.75); }
+        .footer-cta-secondary:hover > span { color: #ffffff; }
+        .footer-cta-secondary:active { transform: scale(0.97); }
+      `}</style>
       {/* CTA band */}
       <div style={{
         borderBottom: '1px solid rgba(255,255,255,0.08)',
@@ -272,11 +312,9 @@ export default function Footer() {
 }
 
 function CtaButton({ label, primary }: { label: string; primary: boolean }) {
-  const [hovered, setHovered] = useState(false)
   return (
     <button
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className={primary ? 'footer-cta-primary' : 'footer-cta-secondary'}
       style={{
         fontFamily: 'var(--font-sans)',
         fontSize: '15px',
@@ -285,17 +323,11 @@ function CtaButton({ label, primary }: { label: string; primary: boolean }) {
         borderRadius: '9999px',
         border: primary ? 'none' : '1.5px solid rgba(255,255,255,0.25)',
         cursor: 'pointer',
-        transition: 'background-color 220ms ease, color 220ms ease, border-color 220ms ease',
-        backgroundColor: primary
-          ? (hovered ? '#AAD576' : '#538D22')
-          : (hovered ? 'rgba(255,255,255,0.08)' : 'transparent'),
-        color: primary
-          ? '#ffffff'
-          : (hovered ? '#ffffff' : 'rgba(255,255,255,0.75)'),
-        borderColor: primary ? 'transparent' : (hovered ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.25)'),
+        backgroundColor: primary ? '#538D22' : 'transparent',
+        color: primary ? '#ffffff' : 'rgba(255,255,255,0.75)',
       }}
     >
-      {label}
+      <span>{label}</span>
     </button>
   )
 }

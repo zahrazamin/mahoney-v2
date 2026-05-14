@@ -20,6 +20,32 @@ const PRODUCT = {
 
 export default function Hero() {
   return (
+    <>
+      <style>{`
+        .hero-swipe {
+          position: relative;
+          overflow: hidden;
+          transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hero-swipe::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: #538D22;
+          border-radius: inherit;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .hero-swipe:hover::before { transform: translateX(0); }
+        .hero-swipe > span {
+          position: relative;
+          z-index: 1;
+          transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .hero-swipe:hover > span { color: #ffffff; }
+        .hero-swipe:active { transform: scale(0.97); }
+      `}</style>
     <section
       style={{
         position: 'relative',
@@ -123,6 +149,7 @@ export default function Hero() {
       <ProductCard />
       <CallNowCard />
     </section>
+    </>
   )
 }
 
@@ -130,6 +157,7 @@ function ShopNowButton() {
   return (
     <a
       href="#"
+      className="hero-swipe"
       style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -142,14 +170,9 @@ function ShopNowButton() {
         fontWeight: 600,
         textDecoration: 'none',
         letterSpacing: '0.02em',
-        transition: 'transform 160ms ease-out, box-shadow 160ms ease-out, opacity 160ms ease-out',
       }}
-      onMouseEnter={e => { e.currentTarget.style.opacity = '0.92' }}
-      onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
-      onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.97)' }}
-      onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
     >
-      Shop Now
+      <span>Shop Now</span>
     </a>
   )
 }
@@ -213,13 +236,10 @@ function ProductCard() {
             {PRODUCT.brand}
           </span>
           <button
-            style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 600, color: '#ffffff', backgroundColor: '#538D22', border: 'none', borderRadius: '9999px', padding: '12px 24px', cursor: 'pointer', transition: 'transform 160ms ease-out, opacity 160ms ease-out' }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.96)')}
-            onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+            className="hero-swipe"
+            style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 600, color: '#ffffff', backgroundColor: '#538D22', border: 'none', borderRadius: '9999px', padding: '12px 24px', cursor: 'pointer' }}
           >
-            Buy Now
+            <span>Buy Now</span>
           </button>
         </div>
       </div>

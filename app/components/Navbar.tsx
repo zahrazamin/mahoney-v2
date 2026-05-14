@@ -174,7 +174,7 @@ function NavLink({ label }: { label: string }) {
         alignItems: 'center',
         gap: '4px',
         fontFamily: 'var(--font-sans)',
-        fontSize: '16px',
+        fontSize: '15px',
         fontWeight: 500,
         color: '#ffffff',
         textDecoration: 'none',

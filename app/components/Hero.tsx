@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowRight, Phone } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
 const WORDS = ['Backorders', 'Sourcing Delays', 'Out-of-Stocks', 'Missing Components', 'Lead Times']
@@ -121,6 +121,7 @@ export default function Hero() {
       </div>
 
       <ProductCard />
+      <CallNowCard />
     </section>
   )
 }
@@ -268,5 +269,48 @@ function TypewriterWord() {
       {text}
       <span className="typewriter-cursor" />
     </span>
+  )
+}
+
+function CallNowCard() {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: '72px',
+        left: '48px',
+        backgroundColor: 'rgba(255, 255, 255, 0.14)',
+        backdropFilter: 'blur(30px)',
+        border: '1px solid rgba(255,255,255,0.5)',
+        borderRadius: '14px',
+        padding: '14px 32px 14px 14px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '14px',
+        zIndex: 3,
+      }}
+    >
+      <div
+        style={{
+          width: '48px',
+          height: '48px',
+          backgroundColor: '#ffffff',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Phone size={22} color="#AAD576" fill="#AAD576" />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <span style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400, color: '#0D2818', lineHeight: 1 }}>
+          Call now
+        </span>
+        <span style={{ fontFamily: 'var(--font-condensed)', fontSize: '20px', fontWeight: 700, color: '#162518', letterSpacing: '-0.01em', lineHeight: 1 }}>
+          332-222-4532
+        </span>
+      </div>
+    </div>
   )
 }

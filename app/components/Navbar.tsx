@@ -24,7 +24,7 @@ const SHOP_COLUMNS = [
       'Sensors', 'Strobe & Rotary Lights', 'Terminal Blocks', 'Tower Lights',
     ],
     brands: [
-      { name: 'Altech Corp.', logo: '/images/logo/partner logo/logo-1.png' },
+      { name: 'Altech Corp.', logo: '/images/logo/partner-logo/logo-1.png' },
       { name: 'IDEC',           logo: null },
       { name: 'Phoenix Contact', logo: null },
     ],
@@ -40,7 +40,7 @@ const SHOP_COLUMNS = [
     ],
     brands: [
       { name: 'Bussmann', logo: null },
-      { name: 'Eaton',    logo: '/images/logo/partner logo/logo-2.png' },
+      { name: 'Eaton',    logo: '/images/logo/partner-logo/logo-2.png' },
       { name: 'Siemens',  logo: null },
     ],
   },
@@ -55,23 +55,23 @@ const SHOP_COLUMNS = [
     brands: [
       { name: 'nVent',   logo: null },
       { name: 'Panduit', logo: null },
-      { name: 'Wago',    logo: '/images/logo/partner logo/logo-3.png' },
+      { name: 'Wago',    logo: '/images/logo/partner-logo/logo-3.png' },
     ],
   },
 ]
 
 const BRANDS_DATA = [
-  { name: 'Altech Corp',         logo: '/images/logo/partner logo/logo-1.png'  },
-  { name: 'Eaton',               logo: '/images/logo/partner logo/logo-2.png'  },
-  { name: 'Wago',                logo: '/images/logo/partner logo/logo-3.png'  },
-  { name: 'ABB',                 logo: '/images/logo/partner logo/logo-4.png'  },
-  { name: 'Siemens',             logo: '/images/logo/partner logo/logo-5.png'  },
-  { name: 'Phoenix Contact',     logo: '/images/logo/partner logo/logo-6.png'  },
-  { name: 'Schneider Electric',  logo: '/images/logo/partner logo/logo-7.png'  },
-  { name: 'Rockwell Automation', logo: '/images/logo/partner logo/logo-8.png'  },
-  { name: 'Honeywell',           logo: '/images/logo/partner logo/logo-9.png'  },
-  { name: 'Molex',               logo: '/images/logo/partner logo/logo-10.png' },
-  { name: 'Panduit',             logo: '/images/logo/partner logo/logo-11.png' },
+  { name: 'Altech Corp',         logo: '/images/logo/partner-logo/logo-1.png'  },
+  { name: 'Eaton',               logo: '/images/logo/partner-logo/logo-2.png'  },
+  { name: 'Wago',                logo: '/images/logo/partner-logo/logo-3.png'  },
+  { name: 'ABB',                 logo: '/images/logo/partner-logo/logo-4.png'  },
+  { name: 'Siemens',             logo: '/images/logo/partner-logo/logo-5.png'  },
+  { name: 'Phoenix Contact',     logo: '/images/logo/partner-logo/logo-6.png'  },
+  { name: 'Schneider Electric',  logo: '/images/logo/partner-logo/logo-7.png'  },
+  { name: 'Rockwell Automation', logo: '/images/logo/partner-logo/logo-8.png'  },
+  { name: 'Honeywell',           logo: '/images/logo/partner-logo/logo-9.png'  },
+  { name: 'Molex',               logo: '/images/logo/partner-logo/logo-10.png' },
+  { name: 'Panduit',             logo: '/images/logo/partner-logo/logo-11.png' },
 ]
 
 const FEATURES_DATA = [

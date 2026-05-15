@@ -23,7 +23,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-1.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
+    logo: '/images/logo/partner-logo/logo-1.png',
     category: 'Automation & Control',
   },
   {
@@ -36,7 +36,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-2.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-2.png',
+    logo: '/images/logo/partner-logo/logo-2.png',
     category: 'Circuit Protection',
   },
   {
@@ -49,7 +49,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#E33C3F',
     image: '/images/products/default/product-12.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-3.png',
+    logo: '/images/logo/partner-logo/logo-3.png',
     category: 'Panel Accessories',
   },
   {
@@ -62,7 +62,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-4.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
+    logo: '/images/logo/partner-logo/logo-1.png',
     category: 'Automation & Control',
   },
   {
@@ -75,7 +75,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-5.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
+    logo: '/images/logo/partner-logo/logo-1.png',
     category: 'Panel Accessories',
   },
   {
@@ -88,7 +88,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-6.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-2.png',
+    logo: '/images/logo/partner-logo/logo-2.png',
     category: 'Panel Accessories',
   },
   {
@@ -101,7 +101,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#E33C3F',
     image: '/images/products/default/product-7.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-3.png',
+    logo: '/images/logo/partner-logo/logo-3.png',
     category: 'Panel Accessories',
   },
   {
@@ -114,7 +114,7 @@ export const PRODUCTS: ProductData[] = [
     stockColor: '#538D22',
     image: '/images/products/default/product-8.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
-    logo: '/images/logo/partner logo/logo-1.png',
+    logo: '/images/logo/partner-logo/logo-1.png',
     category: 'Automation & Control',
   },
 ]

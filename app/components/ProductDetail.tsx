@@ -271,14 +271,36 @@ export default function ProductDetail({ productId }: { productId?: string }) {
         }
         .pd-sticky-add:hover > span { color: #0D2818; }
         .pd-sticky-add:active { transform: scale(0.97); }
+
+        .pd-quote-outline {
+          position: relative; overflow: hidden;
+          transition: transform 160ms ease-out;
+        }
+        .pd-quote-outline::before {
+          content: '';
+          position: absolute; inset: 0;
+          background: #0D2818;
+          border-radius: 9999px;
+          transform: translateX(-100%);
+          transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+          z-index: 0;
+        }
+        .pd-quote-outline:hover::before { transform: translateX(0); }
+        .pd-quote-outline > span {
+          position: relative; z-index: 1;
+          color: #0D2818;
+          transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .pd-quote-outline:hover > span { color: #ffffff; }
+        .pd-quote-outline:active { transform: scale(0.97); }
       `}</style>
 
       {/* ── Main two-column grid ─────────────────────────────────────── */}
       <div
         style={{
-          padding: '130px 200px 100px',
+          padding: '120px 200px 100px',
           display: 'grid',
-          gridTemplateColumns: '1.2fr 0.8fr',
+          gridTemplateColumns: '1.1fr 0.9fr',
           gap: '72px',
           alignItems: 'start',
         }}
@@ -311,12 +333,12 @@ export default function ProductDetail({ productId }: { productId?: string }) {
                 style={{
                   width: '108px', height: '108px',
                   backgroundColor: 'transparent', borderRadius: '10px',
-                  border: activeImage === i ? '1px solid #0D2818' : '1px solid transparent',
+                  border: activeImage === i ? '1px solid rgba(13,40,24,0.35)' : '1px solid transparent',
                   cursor: 'pointer', padding: '5px',
                   boxSizing: 'border-box',
                 }}
               >
-                <div style={{ position: 'relative', width: '100%', height: '100%', backgroundColor: '#F3F3F3', borderRadius: '7px', overflow: 'hidden' }}>
+                <div style={{ position: 'relative', width: '100%', height: '100%', backgroundColor: '#ffffff', borderRadius: '7px', overflow: 'hidden' }}>
                   <Image src={src} alt={`View ${i + 1}`} fill style={{ objectFit: 'cover' }} sizes="108px" />
                 </div>
               </button>
@@ -324,7 +346,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           </div>
 
           {/* Single active image — fills remaining height */}
-          <div style={{ flex: 1, position: 'relative', backgroundColor: '#F3F3F3', borderRadius: '24px', overflow: 'hidden' }}>
+          <div style={{ flex: 1, position: 'relative', backgroundColor: '#ffffff', borderRadius: '24px', overflow: 'hidden' }}>
             {images.map((src, i) => (
               <div
                 key={i}
@@ -367,12 +389,26 @@ export default function ProductDetail({ productId }: { productId?: string }) {
             ))}
           </div>
 
+          {/* Brand logo + category chip */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+            <div style={{ position: 'relative', width: '120px', height: '44px' }}>
+              <Image src={base.logo} alt="Brand" fill style={{ objectFit: 'contain', objectPosition: 'left center' }} />
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-sans)', fontSize: '11px', fontWeight: 600,
+              color: '#538D22', letterSpacing: '0.1em', textTransform: 'uppercase',
+              backgroundColor: 'rgba(83,141,34,0.1)', borderRadius: '6px', padding: '5px 10px',
+            }}>
+              Industrial Cooling
+            </span>
+          </div>
+
           {/* Title */}
-          <div style={{ marginBottom: '18px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <h1
               style={{
                 fontFamily: 'var(--font-condensed)',
-                fontSize: '44px', fontWeight: 700,
+                fontSize: '38px', fontWeight: 700,
                 color: '#0D2818', letterSpacing: '-0.02em',
                 lineHeight: 1.1, margin: 0,
               }}
@@ -382,7 +418,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           </div>
 
           {/* Price */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1px', marginBottom: '28px' }}>
             <span
               style={{
                 fontFamily: 'var(--font-condensed)',
@@ -412,34 +448,31 @@ export default function ProductDetail({ productId }: { productId?: string }) {
             </span>
           </div>
 
-          {/* SKU box + logo */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backgroundColor: '#F0F0F0',
-              borderRadius: '8px',
-              padding: '8px 14px',
-            }}
-          >
-            <span style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: '#0D2818', letterSpacing: '0.04em' }}>
-              SKU: {base.sku}
-            </span>
-            <button
-              onClick={() => {
-                navigator.clipboard.writeText(base.sku)
-                setSkuCopied(true)
-                setTimeout(() => setSkuCopied(false), 1500)
+          {/* SKU box */}
+          <div style={{ marginBottom: '20px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: 'rgba(13,40,24,0.06)',
+                borderRadius: '8px',
+                padding: '8px 14px',
               }}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', color: skuCopied ? '#538D22' : '#0D2818', transition: 'color 200ms ease' }}
             >
-              {skuCopied ? <Check size={13} strokeWidth={2.5} /> : <Copy size={13} strokeWidth={2} />}
-            </button>
-          </div>
-            <div style={{ position: 'relative', width: '100px', height: '40px', flexShrink: 0 }}>
-              <Image src={base.logo} alt="Brand" fill style={{ objectFit: 'contain', objectPosition: 'right center' }} />
+              <span style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: '#0D2818', letterSpacing: '0.04em' }}>
+                SKU: {base.sku}
+              </span>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(base.sku)
+                  setSkuCopied(true)
+                  setTimeout(() => setSkuCopied(false), 1500)
+                }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', color: skuCopied ? '#538D22' : '#0D2818', transition: 'color 200ms ease' }}
+              >
+                {skuCopied ? <Check size={13} strokeWidth={2.5} /> : <Copy size={13} strokeWidth={2} />}
+              </button>
             </div>
           </div>
 
@@ -453,9 +486,6 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           >
             {`The ${base.name} is engineered for demanding industrial environments — built to spec: ${base.specs.toLowerCase()}. Trusted by system integrators across North America.`}
           </p>
-
-          {/* Divider */}
-          <div style={{ height: '1px', backgroundColor: 'rgba(13,40,24,0.1)', marginBottom: '20px' }} />
 
           {/* Variant selector */}
           <div style={{ marginBottom: '20px' }}>
@@ -575,10 +605,10 @@ export default function ProductDetail({ productId }: { productId?: string }) {
 
             {/* Add to Quote */}
             <button
-              className="pd-sticky-add"
+              className="pd-quote-outline"
               style={{
                 width: '100%', padding: '16px 24px',
-                backgroundColor: '#0B2A1B', border: 'none', borderRadius: '9999px',
+                backgroundColor: 'transparent', border: '1.5px solid #0D2818', borderRadius: '9999px',
                 fontFamily: 'var(--font-sans)', fontSize: '16px', fontWeight: 500,
                 cursor: 'pointer',
               }}
@@ -591,22 +621,21 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           <div
             style={{
               display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-              padding: '20px 0',
-              borderTop: '1px solid rgba(13,40,24,0.1)',
-              borderBottom: '1px solid rgba(13,40,24,0.1)',
-              marginBottom: '20px',
+              padding: '28px 0',
+              marginBottom: '16px',
             }}
           >
-            {TRUST.map(({ Icon, label }) => (
-              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
+            {TRUST.map(({ Icon, label, sub }) => (
+              <div key={label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', textAlign: 'center' }}>
                 <Icon size={28} color="#0D2818" strokeWidth={1.5} />
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', color: '#0D2818' }}>{label}</span>
+                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 600, color: '#0D2818' }}>{label}</span>
+                <span style={{ fontFamily: 'var(--font-sans)', fontSize: '13px', color: '#0D2818', opacity: 0.5 }}>{sub}</span>
               </div>
             ))}
           </div>
 
           {/* Accordions */}
-          <div style={{ borderTop: '1px solid rgba(13,40,24,0.1)' }}>
+          <div>
             {ACCORDIONS.map(({ id, title, content }) => (
               <div key={id} style={{ borderBottom: '1px solid rgba(13,40,24,0.1)' }}>
                 <button
@@ -646,8 +675,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           <div
             style={{
               display: 'flex', alignItems: 'center', gap: '16px',
-              padding: '18px 0',
-              borderBottom: '1px solid rgba(13,40,24,0.1)',
+              padding: '24px 0 0',
             }}
           >
             <span style={{ fontFamily: 'var(--font-sans)', fontSize: '16px', fontWeight: 500, color: '#0D2818' }}>
@@ -679,8 +707,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           {/* Downloads */}
           <div
             style={{
-              padding: '18px 0',
-              borderBottom: '1px solid rgba(13,40,24,0.1)',
+              padding: '20px 0 0',
             }}
           >
             <span style={{ fontFamily: 'var(--font-sans)', fontSize: '16px', fontWeight: 500, color: '#0D2818', display: 'block', marginBottom: '12px' }}>
@@ -709,7 +736,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
           </div>
 
           {/* Related products */}
-          <div style={{ marginTop: '28px' }}>
+          <div style={{ marginTop: '28px', backgroundColor: '#F3F4F2', borderRadius: '20px', padding: '24px' }}>
             <h3
               style={{
                 fontFamily: 'var(--font-condensed)',
@@ -726,7 +753,7 @@ export default function ProductDetail({ productId }: { productId?: string }) {
                   key={p.id}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '16px',
-                    padding: '16px 20px', backgroundColor: '#F3F3F3', borderRadius: '16px',
+                    padding: '16px 20px', backgroundColor: '#ffffff', borderRadius: '14px',
                   }}
                 >
                   <div style={{ width: '88px', height: '88px', position: 'relative', flexShrink: 0 }}>

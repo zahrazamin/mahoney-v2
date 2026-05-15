@@ -2,6 +2,16 @@
 
 # Mahoney V2 — Design System
 
+## Design Inspiration
+
+The primary reference for this site's product list and overall minimalism is **Wellina** (pebble-wellina.myshopify.com). Key principles borrowed:
+- Spacing-only separation between content groups — no decorative divider lines in info columns
+- Product cards: `#F0F0F0` gray bg, `borderRadius: 18–20px`, white image panel, content strip below
+- Typography: condensed for names/headings, sans for prices/labels — matching roles to Wellina's serif/sans split
+- CTA hierarchy: filled primary → filled secondary → outlined tertiary (no three equal-weight buttons)
+- Filter sidebar: accordion groups, thin `rgba(13,40,24,0.1)` separators, no heavy borders
+- Grid: 3 columns default, `gap: 12px`, cards `aspect-ratio: 1/1` image area
+
 ## Typography
 
 | Token | Font | Weight | Size | Usage |
@@ -135,6 +145,26 @@ These are used to match button styles across sections:
 - **Shop Now**: `backgroundColor: #AAD576`, `color: #162518`, `borderRadius: 9999px`, `padding: 16px 40px`, sans, 600, 16px
 - **Buy Now**: `backgroundColor: #538D22`, `color: #ffffff`, `borderRadius: 9999px`, `padding: 12px 24px`, sans, 600, 14px
 - Hero product card: `borderRadius: 18px` (matched by second section image box)
+
+---
+
+## Product List Page (`/products`)
+
+- Layout: `padding: '120px 200px 100px'`, white bg
+- Page title: condensed, 700, 48px, `#0D2818`, `letterSpacing: -0.02em`
+- Content: flex row — sidebar 240px + `gap: 40px` + grid (flex: 1)
+- Sidebar filter groups: accordion, `borderBottom: 1px solid rgba(13,40,24,0.1)`, condensed 600 17px heading
+- Toolbar: product count (sans 400 14px muted) + sort select (pill border) + column toggle (3/4)
+- Grid: `repeat(3, 1fr)`, `gap: 12px`
+
+### Product List Card
+- Wrapper: `backgroundColor: #F0F0F0`, `borderRadius: 18px`, `overflow: hidden`
+- Image area: `aspect-ratio: 1/1`, default image `objectFit: contain` with padding, hover image `objectFit: cover`
+- Hover: lifestyle image fades in, "Add to Quote" button slides up from bottom (`translateY(100%)` → `0`)
+- Stock badge: top-left, pill, `#538D22` or `#E33C3F`
+- Content strip: `padding: 14px 16px`, flex row space-between
+- Left text: spec hint (sans 400 12px, 50% opacity) → name (condensed 600 16px) → price (sans 500 14px), `gap: 3px`
+- Right: cart circle `38×38px`, `#092211`, position-aware white fill hover (same as homepage)
 
 ---
 

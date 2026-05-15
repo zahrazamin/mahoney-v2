@@ -9,6 +9,7 @@ export type ProductData = {
   image: string
   hoverImage: string
   logo: string
+  category: string
 }
 
 export const PRODUCTS: ProductData[] = [
@@ -23,6 +24,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-1.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-1.png',
+    category: 'Automation & Control',
   },
   {
     id: 2,
@@ -35,6 +37,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-2.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-2.png',
+    category: 'Circuit Protection',
   },
   {
     id: 3,
@@ -47,6 +50,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-12.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-3.png',
+    category: 'Panel Accessories',
   },
   {
     id: 4,
@@ -59,6 +63,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-4.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-1.png',
+    category: 'Automation & Control',
   },
   {
     id: 5,
@@ -71,6 +76,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-5.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-1.png',
+    category: 'Panel Accessories',
   },
   {
     id: 6,
@@ -83,6 +89,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-6.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-2.png',
+    category: 'Panel Accessories',
   },
   {
     id: 7,
@@ -95,6 +102,7 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-7.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-3.png',
+    category: 'Panel Accessories',
   },
   {
     id: 8,
@@ -107,5 +115,6 @@ export const PRODUCTS: ProductData[] = [
     image: '/images/products/default/product-8.png',
     hoverImage: '/images/products/hover/hover-image.jpg',
     logo: '/images/logo/partner logo/logo-1.png',
+    category: 'Automation & Control',
   },
 ]

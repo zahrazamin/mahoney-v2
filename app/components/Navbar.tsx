@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import Image from 'next/image'
-import { Search, User, ShoppingCart, ChevronDown, ChevronRight } from 'lucide-react'
+import { Search, User, ShoppingCart, ChevronDown, ChevronRight, X } from 'lucide-react'
+import { PRODUCTS } from '../lib/products'
 
 const NAV_LINKS = ['Shop', 'Features', 'Brands', 'About']
 
@@ -80,20 +81,39 @@ const FEATURES_DATA = [
   { image: '/images/banners/feature-image-4.jpg', tag: 'WHOLESALE',    title: 'Tax-Exempt Accounts',      subtitle: 'Dedicated pricing for wholesale buyers' },
 ]
 
-export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: boolean }) {
-  const barRef       = useRef<HTMLDivElement>(null)
-  const contentRef   = useRef<HTMLDivElement>(null)
-  const megaMenuRef  = useRef<HTMLDivElement>(null)
-  const megaCardRef  = useRef<HTMLDivElement>(null)
-  const aboutLinkRef = useRef<HTMLAnchorElement>(null)
-  const aboutDropRef = useRef<HTMLDivElement>(null)
-  const closeTimer   = useRef<ReturnType<typeof setTimeout> | null>(null)
+const POPULAR_SEARCHES = ['Push Buttons', 'Circuit Breakers', 'Power Supply', 'Terminal Blocks', 'Relays', 'Fuses']
 
-  const [activeMenu, setActiveMenu] = useState<string | null>(null)
+export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: boolean }) {
+  const barRef            = useRef<HTMLDivElement>(null)
+  const contentRef        = useRef<HTMLDivElement>(null)
+  const megaMenuRef       = useRef<HTMLDivElement>(null)
+  const megaCardRef       = useRef<HTMLDivElement>(null)
+  const aboutLinkRef      = useRef<HTMLAnchorElement>(null)
+  const aboutDropRef      = useRef<HTMLDivElement>(null)
+  const closeTimer        = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
+  const searchDropRef     = useRef<HTMLDivElement>(null)
+  const searchInputRef    = useRef<HTMLInputElement>(null)
+
+  const [activeMenu, setActiveMenu]   = useState<string | null>(null)
+  const [searchActive, setSearchActive] = useState(false)
+  const [searchQuery, setSearchQuery]   = useState('')
 
   const openMenu = (label: string) => {
     if (closeTimer.current) clearTimeout(closeTimer.current)
+    setSearchActive(false)
+    setSearchQuery('')
     setActiveMenu(label)
+  }
+
+  const openSearch = () => {
+    setActiveMenu(null)
+    setSearchActive(true)
+  }
+
+  const closeSearch = () => {
+    setSearchActive(false)
+    setSearchQuery('')
   }
 
   const scheduleClose = () => {
@@ -104,7 +124,6 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
     if (closeTimer.current) clearTimeout(closeTimer.current)
   }
 
-  // Sets mega menu geometry imperatively — called from both useLayoutEffect and scroll handler
   function applyMegaGeometry(margin: number, top: number, radius: number) {
     const menu = megaMenuRef.current
     const card = megaCardRef.current
@@ -120,9 +139,12 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
     if (aboutDropRef.current) {
       aboutDropRef.current.style.top = `${top + BAR_H}px`
     }
+    if (searchDropRef.current) {
+      searchDropRef.current.style.top   = `${top + BAR_H}px`
+      searchDropRef.current.style.right = `${margin + PAD}px`
+    }
   }
 
-  // Set all imperative styles before first paint — owns bar/content/menu geometry
   useLayoutEffect(() => {
     const bar     = barRef.current
     const content = contentRef.current
@@ -196,6 +218,23 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
     }
   }, [activeMenu])
 
+  useEffect(() => {
+    if (!searchActive) return
+    const handleClick = (e: MouseEvent) => {
+      if (searchContainerRef.current?.contains(e.target as Node) ||
+          searchDropRef.current?.contains(e.target as Node)) return
+      closeSearch()
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [searchActive])
+
+  useEffect(() => {
+    if (searchActive) {
+      setTimeout(() => searchInputRef.current?.focus(), 50)
+    }
+  }, [searchActive])
+
   return (
     <>
       <style>{`
@@ -210,14 +249,34 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
         .browse-all-btn:hover::before { transform: translateX(0); }
         .browse-all-btn span { position: relative; z-index: 1; transition: color 500ms cubic-bezier(0.23, 1, 0.32, 1); }
         .browse-all-btn:hover span { color: #AAD576; }
+        .search-pill {
+          background: transparent;
+          border: 1px solid rgba(13,40,24,0.15);
+          border-radius: 9999px;
+          padding: 7px 16px;
+          font-family: var(--font-sans);
+          font-size: 13px;
+          font-weight: 500;
+          color: #0D2818;
+          cursor: pointer;
+          transition: background-color 180ms ease, border-color 180ms ease;
+        }
+        .search-pill:hover {
+          background-color: #F1F4F2;
+          border-color: rgba(13,40,24,0.25);
+        }
+        .search-product-card-img {
+          transition: transform 500ms cubic-bezier(0.23,1,0.32,1);
+        }
       `}</style>
+
       {/* ── Backdrop ── */}
       <div style={{
         position: 'fixed', inset: 0,
         zIndex: 997,
         backgroundColor: 'rgba(0,0,0,0.60)',
         pointerEvents: 'none',
-        opacity: activeMenu ? 1 : 0,
+        opacity: (activeMenu || searchActive) ? 1 : 0,
         transition: 'opacity 240ms cubic-bezier(0.23,1,0.32,1)',
       }} />
 
@@ -260,26 +319,141 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
             ))}
           </nav>
 
-          <div style={{
+          <a href="/" style={{
             position: 'absolute', left: '50%', top: '50%',
             transform: 'translate(-50%, -50%)', pointerEvents: 'auto',
+            display: 'block', lineHeight: 0,
           }}>
             <Image src="/images/logo/logo-1.svg" alt="Mahoney Controls"
               width={180} height={50} priority style={{ width: 'auto', height: '48px' }} />
-          </div>
+          </a>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', pointerEvents: 'auto' }}>
-            <span style={{
-              fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400,
-              color: '#ffffff', letterSpacing: '0.01em', userSelect: 'none', whiteSpace: 'nowrap',
-            }}>
-              What are you looking for?
-            </span>
+          {/* Right: search + icons */}
+          <div ref={searchContainerRef} style={{ display: 'flex', alignItems: 'center', gap: '10px', pointerEvents: 'auto' }}>
+            {searchActive ? (
+              /* White pill input */
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                backgroundColor: 'transparent',
+                border: '1.5px solid rgba(255,255,255,0.55)',
+                borderRadius: '9999px',
+                padding: '0 8px 0 16px', height: '40px',
+              }}>
+                <Search size={15} strokeWidth={2} style={{ color: 'rgba(255,255,255,0.55)', flexShrink: 0 }} />
+                <input
+                  ref={searchInputRef}
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Escape') closeSearch() }}
+                  placeholder="What are you looking for?"
+                  style={{
+                    background: 'transparent', border: 'none', outline: 'none',
+                    fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400,
+                    color: '#ffffff', width: '210px',
+                  }}
+                />
+                <button
+                  onClick={closeSearch}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: '28px', height: '28px', borderRadius: '50%',
+                    color: 'rgba(255,255,255,0.65)',
+                    transition: 'background 150ms ease',
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.10)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                >
+                  <X size={15} strokeWidth={2.5} />
+                </button>
+              </div>
+            ) : (
+              /* Inactive: text + search icon */
+              <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <span
+                  onClick={openSearch}
+                  style={{
+                    fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 400,
+                    color: '#ffffff', letterSpacing: '0.01em', userSelect: 'none',
+                    whiteSpace: 'nowrap', cursor: 'pointer',
+                  }}
+                >
+                  What are you looking for?
+                </span>
+                <button
+                  aria-label="Search"
+                  onClick={openSearch}
+                  style={{
+                    background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: '40px', height: '40px', borderRadius: '6px',
+                    transition: 'background 150ms ease-out',
+                    flexShrink: 0,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                >
+                  <Search size={22} strokeWidth={1.5} />
+                </button>
+              </div>
+            )}
             <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-              <IconButton Icon={Search} label="Search" />
-              <IconButton Icon={User}   label="Account" />
+              <IconButton Icon={User}         label="Account" />
               <IconButton Icon={ShoppingCart} label="Cart" />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Search dropdown ── */}
+      <div
+        ref={searchDropRef}
+        style={{
+          position: 'fixed',
+          width: '520px',
+          zIndex: 999,
+          pointerEvents: searchActive ? 'auto' : 'none',
+          opacity: searchActive ? 1 : 0,
+          transform: searchActive ? 'translateY(0)' : 'translateY(-8px)',
+          transition: 'opacity 220ms cubic-bezier(0.23,1,0.32,1), transform 220ms cubic-bezier(0.23,1,0.32,1)',
+        }}
+      >
+        <div style={{
+          backgroundColor: '#ffffff',
+          borderRadius: '0 0 20px 20px',
+          boxShadow: '0 8px 48px rgba(9,34,17,0.13)',
+          padding: '28px',
+        }}>
+          {/* Popular Search */}
+          <p style={{
+            fontFamily: 'var(--font-condensed)', fontSize: '18px', fontWeight: 600,
+            color: '#0D2818', margin: '0 0 14px', letterSpacing: '-0.01em',
+          }}>
+            Popular Search
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
+            {POPULAR_SEARCHES.map(term => (
+              <button key={term} className="search-pill" onClick={() => setSearchQuery(term)}>
+                {term}
+              </button>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div style={{ height: '1px', backgroundColor: '#F0EDE8', marginBottom: '22px' }} />
+
+          {/* Featured Products */}
+          <p style={{
+            fontFamily: 'var(--font-condensed)', fontSize: '18px', fontWeight: 600,
+            color: '#0D2818', margin: '0 0 14px', letterSpacing: '-0.01em',
+          }}>
+            Featured Products
+          </p>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            {PRODUCTS.slice(0, 3).map(p => (
+              <SearchProductCard key={p.id} product={p} />
+            ))}
           </div>
         </div>
       </div>
@@ -353,7 +527,7 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
             </div>
           ) : activeMenu === 'Brands' ? (
             <div style={{ display: 'flex', alignItems: 'stretch' }}>
-              {/* Left anchor panel — extends to dropdown left edge */}
+              {/* Left anchor panel */}
               <div style={{
                 flexShrink: 0,
                 width: 'calc(var(--mega-pad) + 220px)' as any,
@@ -429,12 +603,25 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
                       }}>
                         {col.subheading}
                       </p>
-                      <h3 style={{
-                        fontFamily: 'var(--font-condensed)', fontSize: '20px', fontWeight: 700,
-                        color: '#0D2818', margin: 0, letterSpacing: '-0.01em',
-                      }}>
+                      <a
+                        href={`/products?category=${encodeURIComponent(col.heading)}`}
+                        style={{
+                          fontFamily: 'var(--font-condensed)', fontSize: '20px', fontWeight: 700,
+                          color: '#0D2818', margin: 0, letterSpacing: '-0.01em',
+                          textDecoration: 'none', display: 'inline-block', position: 'relative',
+                        }}
+                        onMouseEnter={e => {
+                          const u = e.currentTarget.querySelector('span') as HTMLSpanElement
+                          if (u) u.style.width = '100%'
+                        }}
+                        onMouseLeave={e => {
+                          const u = e.currentTarget.querySelector('span') as HTMLSpanElement
+                          if (u) u.style.width = '0%'
+                        }}
+                      >
                         {col.heading}
-                      </h3>
+                        <span style={{ position: 'absolute', bottom: '-2px', left: 0, width: '0%', height: '1.5px', backgroundColor: '#0D2818', transition: 'width 480ms cubic-bezier(0.23,1,0.32,1)' }} />
+                      </a>
                     </div>
 
                     {/* Items */}
@@ -466,7 +653,7 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
                 ))}
               </div>
 
-              {/* Right sidebar — two image cards */}
+              {/* Right sidebar */}
               <div style={{
                 width: '300px', flexShrink: 0, marginLeft: '28px',
                 display: 'flex', flexDirection: 'column', gap: '10px',
@@ -524,6 +711,69 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
+function SearchProductCard({ product }: { product: typeof PRODUCTS[0] }) {
+  const cardRef = useRef<HTMLAnchorElement>(null)
+  const imgRef  = useRef<HTMLDivElement>(null)
+  return (
+    <a
+      ref={cardRef}
+      href={`/products/${product.id}`}
+      onMouseEnter={() => {
+        if (cardRef.current) cardRef.current.style.boxShadow = '0 4px 24px rgba(9,34,17,0.10)'
+        if (imgRef.current) imgRef.current.style.transform = 'scale(1.05)'
+      }}
+      onMouseLeave={() => {
+        if (cardRef.current) cardRef.current.style.boxShadow = 'none'
+        if (imgRef.current) imgRef.current.style.transform = 'scale(1)'
+      }}
+      style={{
+        flex: 1, textDecoration: 'none', display: 'block',
+        backgroundColor: '#F5F5F4', borderRadius: '14px',
+        overflow: 'hidden', transition: 'box-shadow 200ms ease',
+      }}
+    >
+      {/* Image area */}
+      <div style={{ height: '148px', overflow: 'hidden', position: 'relative' }}>
+        <div
+          ref={imgRef}
+          style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '20px',
+            transition: 'transform 500ms cubic-bezier(0.23,1,0.32,1)',
+          }}
+        >
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Image src={product.image} alt={product.name} fill style={{ objectFit: 'contain' }} sizes="180px" />
+          </div>
+        </div>
+      </div>
+
+      {/* Text */}
+      <div style={{ padding: '12px 14px 16px' }}>
+        <p style={{
+          fontFamily: 'var(--font-sans)', fontSize: '12px', fontWeight: 400,
+          color: 'rgba(13,40,24,0.48)', margin: '0 0 4px',
+        }}>
+          {product.category}
+        </p>
+        <p style={{
+          fontFamily: 'var(--font-condensed)', fontSize: '15px', fontWeight: 700,
+          color: '#0D2818', margin: '0 0 4px', lineHeight: 1.2,
+        }}>
+          {product.name}
+        </p>
+        <p style={{
+          fontFamily: 'var(--font-sans)', fontSize: '14px', fontWeight: 500,
+          color: '#0D2818', margin: 0,
+        }}>
+          {product.price}
+        </p>
+      </div>
+    </a>
+  )
+}
 
 function BrandLogoCard({ name, logo, borderRight, borderBottom }: {
   name: string; logo: string; borderRight?: boolean; borderBottom?: boolean
@@ -603,9 +853,7 @@ function FeatureCard({ image, tag, title, subtitle }: { image: string; tag: stri
       <div ref={imgWrapRef} style={{ position: 'absolute', inset: 0, transition: 'transform 600ms cubic-bezier(0.23,1,0.32,1)' }}>
         <Image src={image} alt="" fill style={{ objectFit: 'cover', objectPosition: 'center' }} sizes="25vw" />
       </div>
-      {/* gradient overlay */}
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.58) 100%)' }} />
-      {/* glass label chip */}
       <div style={{
         position: 'absolute', top: '26px', left: '26px',
         background: 'linear-gradient(to right, rgba(255,255,255,0.28), rgba(255,255,255,0.08))',
@@ -613,7 +861,6 @@ function FeatureCard({ image, tag, title, subtitle }: { image: string; tag: stri
         border: '1px solid rgba(255,255,255,0.22)', borderRadius: '9999px', padding: '5px 14px',
         fontFamily: 'var(--font-sans)', fontSize: '12px', fontWeight: 500, color: '#ffffff',
       }}>{tag}</div>
-      {/* title + arrow */}
       <div style={{ position: 'absolute', bottom: '26px', left: '26px', right: '26px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
         <div style={{ flex: 1 }}>
             <h4 style={{ fontFamily: 'var(--font-condensed)', fontSize: '20px', fontWeight: 700, color: '#ffffff', lineHeight: 1.2, margin: '0 0 7px', letterSpacing: '-0.01em' }}>{title}</h4>
@@ -632,7 +879,7 @@ function NavLink({ label, active, onEnter, onLeave, linkRef }: {
   active: boolean
   onEnter: () => void
   onLeave: () => void
-  linkRef?: React.RefObject<HTMLAnchorElement>
+  linkRef?: React.RefObject<HTMLAnchorElement | null>
 }) {
   return (
     <a
@@ -744,12 +991,10 @@ function SidebarCard({ image, label, title }: {
       <div ref={imgWrapRef} style={{ position: 'absolute', inset: 0, transition: 'transform 600ms cubic-bezier(0.23,1,0.32,1)' }}>
         <Image src={image} alt="" fill style={{ objectFit: 'cover', objectPosition: 'center' }} sizes="300px" />
       </div>
-      {/* gradient overlay */}
       <div style={{
         position: 'absolute', inset: 0,
         background: 'linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.75) 100%)',
       }} />
-      {/* label chip */}
       <div style={{
         position: 'absolute', top: '24px', left: '24px',
         background: 'linear-gradient(to right, rgba(255,255,255,0.28), rgba(255,255,255,0.08))',
@@ -762,7 +1007,6 @@ function SidebarCard({ image, label, title }: {
       }}>
         {label}
       </div>
-      {/* title + arrow */}
       <div style={{
         position: 'absolute', bottom: '24px', left: '24px', right: '24px',
         display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px',

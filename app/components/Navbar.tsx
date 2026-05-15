@@ -139,10 +139,6 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
     if (aboutDropRef.current) {
       aboutDropRef.current.style.top = `${top + BAR_H}px`
     }
-    if (searchDropRef.current) {
-      searchDropRef.current.style.top   = `${top + BAR_H}px`
-      searchDropRef.current.style.right = `${margin + PAD}px`
-    }
   }
 
   useLayoutEffect(() => {
@@ -233,6 +229,23 @@ export default function Navbar({ defaultExpanded = false }: { defaultExpanded?: 
     if (searchActive) {
       setTimeout(() => searchInputRef.current?.focus(), 50)
     }
+  }, [searchActive])
+
+  // Position search dropdown flush against the bar's actual bottom edge
+  useEffect(() => {
+    if (!searchActive) return
+
+    function updateDropPos() {
+      if (!barRef.current || !searchDropRef.current || !searchContainerRef.current) return
+      const barBottom = barRef.current.getBoundingClientRect().bottom
+      const containerRight = searchContainerRef.current.getBoundingClientRect().right
+      searchDropRef.current.style.top   = `${barBottom}px`
+      searchDropRef.current.style.right = `${window.innerWidth - containerRight}px`
+    }
+
+    updateDropPos()
+    window.addEventListener('scroll', updateDropPos, { passive: true })
+    return () => window.removeEventListener('scroll', updateDropPos)
   }, [searchActive])
 
   return (

@@ -58,7 +58,7 @@ export default function Hero() {
       {/* Left panel */}
       <div style={{ position: 'absolute', inset: 0, right: '50%', overflow: 'hidden' }}>
         <Image
-          src="/images/banners/banner-1.png"
+          src="/images/banners/banner-left.png"
           alt=""
           fill
           sizes="50vw"
